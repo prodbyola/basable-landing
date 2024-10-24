@@ -10,6 +10,7 @@ import LinkedIn from "./assets/LinkedIn.svg";
 import { HeaderButtons } from "../Nav/Buttons";
 import HamburgerIcon from "./assets/Hamburger.png";
 import { Divider, Link, List, ListItem } from "@mui/material";
+import { LogoSvg } from "./assets";
 
 const drawerWidth = 240;
 const useStyles = makeStyles((theme) => {
@@ -58,6 +59,12 @@ const useStyles = makeStyles((theme) => {
     active: {
       backgroundColor: "#f4f4f4",
     },
+    logo: {
+      maxWidth: "129.69px",
+      marginTop: "24px",
+      marginInline: "10px",
+      marginBottom: "34px",
+    },
   };
 });
 
@@ -73,82 +80,74 @@ const Header = () => {
 
   return (
     <header className="header">
-      <Drawer
-        className={classes.drawer}
-        open={menuOpen}
-        onClose={() => setMenuOpen(!menuOpen)}
-        anchor="right"
-        classes={{ paper: classes.drawerPaper }}
-      >
-        <img
-          src={Logo}
-          style={{
-            maxWidth: "129.69px",
-            marginTop: "24px",
-            marginInline: "10px",
-            marginBottom: "34px",
-          }}
-          alt="Logo"
-          className="logo"
-        />
-        <List>
-          {sections.map((section) => (
-            <Link
-              onClick={() => {
-                setActiveLink(section.link);
-                console.log(activeLink);
-                setMenuOpen(!menuOpen);
-              }}
-              button
-              key={section.id}
-              sx={{
-                textDecoration: "none",
-              }}
-              className={`nav-link`}
-              href={`#${section.id}`}
-            >
-              <ListItem
-                href={`#${section.id}`}
-                sx={{
-                  paddingBottom: "24px",
-                  paddingTop: "24px",
-                }}
-                className={activeLink === section.link ? classes.active : null}
-              >
-                {section.id}
-              </ListItem>
-            </Link>
-          ))}
-        </List>
-        <Divider />
-
-        <button className={classes.btn}>Join now</button>
-        <div className={classes.headerButtons}>
-          <a
-            href="https://www.linkedin.com"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <img src={LinkedIn} alt="LinkedIn" className={classes.icon} />
-          </a>
-          <a
-            href="https://www.twitter.com"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <img src={X} alt="X" className={classes.icon} />
-          </a>
-          <a
-            href="https://www.github.com"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <img src={Github} alt="GitHub" className={classes.icon} />
-          </a>
-        </div>
-      </Drawer>
       <div className="container">
-        <img src={Logo} alt="Logo" className={classes.icon} />
+        <Drawer
+          className={classes.drawer}
+          open={menuOpen}
+          onClose={() => setMenuOpen(!menuOpen)}
+          anchor="right"
+          classes={{ paper: classes.drawerPaper }}
+        >
+          <div className={classes.logo}>
+            <LogoSvg />
+          </div>
+
+          <List>
+            {sections.map((section) => (
+              <Link
+                onClick={() => {
+                  setActiveLink(section.link);
+                  console.log(activeLink);
+                  setMenuOpen(!menuOpen);
+                }}
+                key={section.id}
+                underline="none"
+                className={`nav-link`}
+                href={`#${section.id}`}
+              >
+                <ListItem
+                  href={`#${section.id}`}
+                  sx={{
+                    paddingBottom: "24px",
+                    paddingTop: "24px",
+                  }}
+                  className={
+                    activeLink === section.link ? classes.active : null
+                  }
+                >
+                  {section.id}
+                </ListItem>
+              </Link>
+            ))}
+          </List>
+          <Divider />
+
+          <button className={classes.btn}>Join now</button>
+          <div className={classes.headerButtons}>
+            <a
+              href="https://www.linkedin.com"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img src={LinkedIn} alt="LinkedIn" className={classes.icon} />
+            </a>
+            <a
+              href="https://www.twitter.com"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img src={X} alt="X" className={classes.icon} />
+            </a>
+            <a
+              href="https://www.github.com"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img src={Github} alt="GitHub" className={classes.icon} />
+            </a>
+          </div>
+        </Drawer>
+        <img src={Logo} alt="Logo" className="logo" />
         <div className="nav-m">
           <Navlist />
         </div>
