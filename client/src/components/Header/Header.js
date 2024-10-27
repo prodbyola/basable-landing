@@ -1,134 +1,166 @@
-import React, { useEffect, useState, useRef } from 'react';
-import './Header.scss';
-import Logo from './assets/logo.svg';
-import LinkedIn from './assets/LinkedIn.svg';
-import X from './assets/X.svg';
-import Github from './assets/Github.svg';
-import HamburgerIcon from './assets/Hamburger.png';
+import "./Header.scss";
+import X from "./assets/X.svg";
+import Logo from "./assets/logo.svg";
+import React, { useState } from "react";
+import { Navlist } from "../Nav/Navlist";
+import Github from "./assets/Github.svg";
+import { makeStyles } from "@mui/styles";
+import Drawer from "@mui/material/Drawer";
+import LinkedIn from "./assets/LinkedIn.svg";
+import { HeaderButtons } from "../Nav/Buttons";
+import HamburgerIcon from "./assets/Hamburger.png";
+import { Divider, Link, List, ListItem } from "@mui/material";
+import { LogoSvg } from "./assets";
+
+const drawerWidth = 240;
+const useStyles = makeStyles((theme) => {
+  return {
+    drawer: {
+      width: drawerWidth,
+    },
+    drawerPaper: {
+      width: drawerWidth,
+    },
+    headerButtons: {
+      display: "flex",
+      flexWrap: "wrap",
+      gap: "32px",
+      marginTop: "2rem",
+      marginLeft: "auto",
+      marginRight: "auto",
+    },
+    btn: {
+      width: "fit-content",
+      padding: "0.5rem 1rem",
+      border: "none",
+      borderRadius: "4px",
+      marginTop: "2rem",
+      marginInline: "20px",
+      cursor: "pointer",
+      background: "#4451ca",
+      color: "#fff",
+      fontFamily: "Lexend",
+      fontSize: "16px",
+      fontWeight: "400",
+      lineHeight: "20px",
+      transition: " background 0.3s",
+      "&:hover": {
+        background: "#0056b3",
+      },
+    },
+    icon: {
+      height: "32px",
+      transition: "opacity 0.3s",
+
+      "&:hover": {
+        opacity: "0.7",
+      },
+    },
+    active: {
+      backgroundColor: "#f4f4f4",
+    },
+    logo: {
+      maxWidth: "129.69px",
+      marginTop: "24px",
+      marginInline: "10px",
+      marginBottom: "34px",
+    },
+  };
+});
 
 const Header = () => {
-  const [activeLink, setActiveLink] = useState('');
+  const [activeLink, setActiveLink] = useState("about");
   const [menuOpen, setMenuOpen] = useState(false);
-  const navRef = useRef(null);
-  const buttonsRef = useRef(null);
-  const mobileViewRef = useRef(null);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const sections = [
-        { id: 'about', link: 'about' },
-        { id: 'features', link: 'features' },
-        { id: 'contact', link: 'contact' }
-      ];
-
-      const scrollPosition = window.scrollY + window.innerHeight / 2;
-
-      for (let section of sections) {
-        const sectionElement = document.getElementById(section.id);
-        if (sectionElement) {
-          const sectionTop = sectionElement.offsetTop;
-          const sectionHeight = sectionElement.offsetHeight;
-          if (
-            scrollPosition >= sectionTop &&
-            scrollPosition < sectionTop + sectionHeight
-          ) {
-            setActiveLink(section.link);
-            return;
-          }
-        }
-      }
-
-      setActiveLink('');
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, []);
-
-  useEffect(() => {
-    const handleResize = () => {
-      const mobileView = mobileViewRef.current;
-      if (window.innerWidth <= 639) {
-        if (mobileView && navRef.current && buttonsRef.current) {
-          mobileView.appendChild(navRef.current);
-          mobileView.appendChild(buttonsRef.current);
-        }
-      } else {
-        if (mobileView && navRef.current && buttonsRef.current) {
-          mobileView.parentElement.insertBefore(navRef.current, mobileView);
-          mobileView.parentElement.insertBefore(buttonsRef.current, mobileView);
-        }
-      }
-    };
-
-    window.addEventListener('resize', handleResize);
-    handleResize();
-
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  }, []);
+  const sections = [
+    { id: "about", link: "about" },
+    { id: "features", link: "features" },
+    { id: "contact", link: "contact" },
+  ];
+  const classes = useStyles();
 
   return (
     <header className="header">
       <div className="container">
+        <Drawer
+          className={classes.drawer}
+          open={menuOpen}
+          onClose={() => setMenuOpen(!menuOpen)}
+          anchor="right"
+          classes={{ paper: classes.drawerPaper }}
+        >
+          <div className={classes.logo}>
+            <LogoSvg />
+          </div>
+
+          <List>
+            {sections.map((section) => (
+              <Link
+                onClick={() => {
+                  setActiveLink(section.link);
+                  console.log(activeLink);
+                  setMenuOpen(!menuOpen);
+                }}
+                key={section.id}
+                underline="none"
+                className={`nav-link`}
+                href={`#${section.id}`}
+              >
+                <ListItem
+                  href={`#${section.id}`}
+                  sx={{
+                    paddingBottom: "24px",
+                    paddingTop: "24px",
+                  }}
+                  className={
+                    activeLink === section.link ? classes.active : null
+                  }
+                >
+                  {section.id}
+                </ListItem>
+              </Link>
+            ))}
+          </List>
+          <Divider />
+
+          <button className={classes.btn}>Join now</button>
+          <div className={classes.headerButtons}>
+            <a
+              href="https://www.linkedin.com"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img src={LinkedIn} alt="LinkedIn" className={classes.icon} />
+            </a>
+            <a
+              href="https://www.twitter.com"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img src={X} alt="X" className={classes.icon} />
+            </a>
+            <a
+              href="https://www.github.com"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img src={Github} alt="GitHub" className={classes.icon} />
+            </a>
+          </div>
+        </Drawer>
         <img src={Logo} alt="Logo" className="logo" />
-        <nav ref={navRef} className="nav">
-          <a
-            href="#about"
-            className={`nav-link ${activeLink === 'about' ? 'active' : ''}`}
-          >
-            About us
-          </a>
-          <a
-            href="#features"
-            className={`nav-link ${activeLink === 'features' ? 'active' : ''}`}
-          >
-            Features
-          </a>
-          <a
-            href="#contact"
-            className={`nav-link ${activeLink === 'contact' ? 'active' : ''}`}
-          >
-            Contact us
-          </a>
-        </nav>
-        <div ref={buttonsRef} className="header-buttons">
-          <button className="btn login">Join now</button>
-          <a
-            href="https://www.linkedin.com"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <img src={LinkedIn} alt="LinkedIn" className="icon" />
-          </a>
-          <a
-            href="https://www.twitter.com"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <img src={X} alt="X" className="icon" />
-          </a>
-          <a
-            href="https://www.github.com"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <img src={Github} alt="GitHub" className="icon" />
-          </a>
+        <div className="nav-m">
+          <Navlist />
         </div>
+        <div className="nav-m">
+          <HeaderButtons />
+        </div>
+
         <img
           src={HamburgerIcon}
           alt="Menu"
           className="hamburger-icon"
           onClick={() => setMenuOpen(!menuOpen)}
         />
-        <div
-          ref={mobileViewRef}
-          className={`mobile-view ${menuOpen ? 'open' : ''}`}
-        ></div>
       </div>
     </header>
   );

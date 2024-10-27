@@ -26,7 +26,7 @@ function Contact() {
   };
 
   return (
-    <section className="contactSection">
+    <section className="contactSection" id="contact">
       <div className="contact-container">
         <div className="contact-left-side">
           <div className="top-contact-part">
