@@ -1,0 +1,296 @@
+basePath: /api
+definitions:
+  Collaborator:
+    properties:
+      createdAt:
+        type: string
+      deletedAt:
+        $ref: '#/definitions/gorm.DeletedAt'
+      email:
+        type: string
+      fullName:
+        type: string
+      github:
+        type: string
+      id:
+        type: string
+      imageUrl:
+        type: string
+      linkedin:
+        type: string
+      role:
+        type: string
+      updatedAt:
+        type: string
+    type: object
+  CreateCollaboratorRequest:
+    properties:
+      email:
+        type: string
+      fullName:
+        type: string
+      github:
+        type: string
+      imageUrl:
+        type: string
+      linkedin:
+        type: string
+      role:
+        default: user
+        type: string
+    required:
+    - email
+    - fullName
+    type: object
+  FailedResponseDto:
+    properties:
+      error:
+        type: string
+      errorType:
+        type: string
+      statusCode:
+        type: integer
+      statusText:
+        type: string
+    type: object
+  SuccessResponseDto:
+    properties:
+      data: {}
+      message:
+        type: string
+      statusCode:
+        type: integer
+      statusText:
+        type: string
+    type: object
+  UpdateCollaborator:
+    properties:
+      fullName:
+        type: string
+      github:
+        type: string
+      imageUrl:
+        type: string
+      linkedin:
+        type: string
+      role:
+        type: string
+    type: object
+  gorm.DeletedAt:
+    properties:
+      time:
+        type: string
+      valid:
+        description: Valid is true if Time is not NULL
+        type: boolean
+    type: object
+host: localhost:5000
+info:
+  contact: {}
+  description: REST API for Basable Landing
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  termsOfService: http://swagger.io/terms/
+  title: Basable Landing REST API
+  version: "1.0"
+paths:
+  /v1/collaborators:
+    get:
+      consumes:
+      - application/json
+      description: get all collaborators
+      parameters:
+      - default: 1
+        description: page number
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: page size
+        in: query
+        name: size
+        type: integer
+      - description: fullName
+        in: query
+        name: fullName
+        type: string
+      - description: email
+        in: query
+        name: email
+        type: string
+      - description: role
+        in: query
+        name: role
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: all Collaborators returned
+          schema:
+            allOf:
+            - $ref: '#/definitions/SuccessResponseDto'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/Collaborator'
+                  type: array
+              type: object
+        "500":
+          description: unexpected internal server error
+          schema:
+            $ref: '#/definitions/FailedResponseDto'
+      summary: returns all collaborators
+      tags:
+      - Collaborator
+    post:
+      consumes:
+      - application/json
+      description: create new collaborator
+      parameters:
+      - description: New Collaborator Details JSON
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/CreateCollaboratorRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Collaborator created successfully
+          schema:
+            allOf:
+            - $ref: '#/definitions/SuccessResponseDto'
+            - properties:
+                data:
+                  $ref: '#/definitions/Collaborator'
+              type: object
+        "400":
+          description: request body validation error
+          schema:
+            $ref: '#/definitions/FailedResponseDto'
+        "409":
+          description: another Collaborator with supplied email exists
+          schema:
+            $ref: '#/definitions/FailedResponseDto'
+        "500":
+          description: unexpected internal server error
+          schema:
+            $ref: '#/definitions/FailedResponseDto'
+      summary: registers a new collaborator
+      tags:
+      - Collaborator
+  /v1/collaborators/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: delete collaborator
+      parameters:
+      - description: Collaborator ID(UUID)
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Collaborator deleted suuceesfully
+          schema:
+            $ref: '#/definitions/SuccessResponseDto'
+        "400":
+          description: request param validation error
+          schema:
+            $ref: '#/definitions/FailedResponseDto'
+        "500":
+          description: unexpected internal server error
+          schema:
+            $ref: '#/definitions/FailedResponseDto'
+      summary: deletes a collaborator
+      tags:
+      - Collaborator
+    get:
+      consumes:
+      - application/json
+      description: get collaborator by ID
+      parameters:
+      - description: collaborator ID(UUID)
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: desc
+          schema:
+            allOf:
+            - $ref: '#/definitions/SuccessResponseDto'
+            - properties:
+                data:
+                  $ref: '#/definitions/Collaborator'
+              type: object
+        "400":
+          description: request param validation error
+          schema:
+            $ref: '#/definitions/FailedResponseDto'
+        "404":
+          description: collaborator with the specified ID not found
+          schema:
+            $ref: '#/definitions/FailedResponseDto'
+        "500":
+          description: unexpected internal server error
+          schema:
+            $ref: '#/definitions/FailedResponseDto'
+      summary: returns a collaborator by its 16 chaarcter uuid
+      tags:
+      - Collaborator
+    patch:
+      consumes:
+      - application/json
+      description: update collaborator
+      parameters:
+      - description: Collaborator ID(UUID)
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Collaborator Details JSON
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/UpdateCollaborator'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Collaborator updated successfully
+          schema:
+            allOf:
+            - $ref: '#/definitions/SuccessResponseDto'
+            - properties:
+                data:
+                  $ref: '#/definitions/Collaborator'
+              type: object
+        "400":
+          description: request body/param validation error
+          schema:
+            $ref: '#/definitions/FailedResponseDto'
+        "404":
+          description: Collaborator with specified ID not found
+          schema:
+            $ref: '#/definitions/FailedResponseDto'
+        "500":
+          description: unexpected internal server error
+          schema:
+            $ref: '#/definitions/FailedResponseDto'
+      summary: updates a collaborator
+      tags:
+      - Collaborator
+schemes:
+- http
+swagger: "2.0"
